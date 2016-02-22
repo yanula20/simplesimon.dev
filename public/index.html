@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Simple Simon</title>
+  
+  <link rel="stylesheet" type="text/css" href="/css/bootstrap-library.css">
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'> 
+ 
+  <style type="text/css">
+    #wrapper {
+      position: relative;
+      width: 500px;
+      margin: 0 auto;
+    }
+
+    body {
+    	background-color: lightblue;
+    	font-family: Comic Sans, Comic Sans MS, cursive;
+    }
+
+    #four-boxes {
+      position: absolute;
+      top: 100px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+
+     #control-div {
+      width: 500px;
+      position: absolute;
+      top: 630px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      left: 15px;
+    }
+
+    .box {
+      width: 250px;
+      height: 250px;
+      border-radius: 15px;
+      border: 3px solid black;
+      margin: 0 auto;
+    }
+
+    #green {
+      background-color: green;
+      border-top-left-radius: 20em;
+     
+    }
+
+    #red {
+      background-color: red;
+      border-top-right-radius: 20em;
+    }
+
+    #blue {
+      background-color: blue;
+       border-bottom-left-radius: 20em;
+    }
+
+    #yellow {
+      background-color: yellow;
+      border-bottom-right-radius: 20em;
+    }
+
+    textarea {
+      border-radius: 5px;
+
+    }
+
+    #start {
+      height: 40px;
+      width: 75px;
+    }
+
+    h1 {
+    	text-align: center;
+    }
+
+   </style>  
+</head>
+<body>
+    <div id="wrapper">
+    	  <h1>Simple Simon Game</h1>
+
+	      <div id="four-boxes">
+
+	        <button class="box" id="green" value = "1" ></button>
+	        <button class="box" id="red" value = "2"></button>
+	        <button class="box" id="blue" value = "4"></button>
+	        <button class="box" id="yellow" value ="3"></button>
+
+	      </div>
+
+	        <br>
+	        <br>
+	        <br>
+	        <br>
+
+	      <div id="control-div">
+
+	         <button class="control" id="start">START</button>
+	         <textarea class="control" id="messages" rows="2" cols="20"></textarea>
+	         <textarea class="control" id="level" rows="2" cols="20"></textarea>
+
+	      </div>
+
+      </div> <!-- end wrapper   --> 
+
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+	var levelCount = 0;
+	var gameArray = [];
+  	var playerArray = [];
+
+
+  	function getRandomNumber () {
+      	return Math.floor((Math.random() * 4) + 1);
+  	}
+
+  	$("#start").click(function (){
+	      gameArray.push(getRandomNumber());
+	      console.log(gameArray);
+	      checkGameArray();
+  	});
+
+ 	function checkGameArray() {
+
+		  gameArray.forEach(function(random,i,array){
+
+		    switch (random) {//am I 1,2,3, or 4?
+
+		    case 1:
+		      	setTimeout(function() {
+			      $("#green").animate({
+		                "opacity": ".1"
+		                }, 500).animate({
+		                "opacity": "1"
+		                }, 500 , function(){
+		                    console.log("green blink done!")
+		              });
+			  	}, 1000*i);
+		    	break;
+
+		    case 2:
+			    setTimeout(function() {
+			      	$("#red").animate({
+		                "opacity": ".1"
+		                }, 500).animate({
+		                "opacity": "1"
+		                }, 500, function(){
+		                    console.log("red blink done!")
+		              	});
+			    }, 1000*i);
+		   	 	break;
+
+		    case 3:
+		    setTimeout(function() {  
+		      	$("#yellow").animate({
+	                "opacity": ".1"
+	                }, 500).animate({
+	                "opacity": "1"
+	                }, 500, function(){
+	                    console.log("yellow blink done!")
+	              	});
+		    }, 1000*i);
+		    break;
+
+		    case 4:
+		    setTimeout(function() {
+		      	$("#blue").animate({
+	                "opacity": ".1"
+	                }, 500).animate({
+	                "opacity": "1"
+	                }, 500, function(){
+	                    console.log("blue blink done!")
+	              });
+		   	}, 1000*i);
+		    break;
+
+		    default:
+		    
+
+		  } //end switch
+
+		}) //end forEach
+		
+		playerKey();
+	
+	} // end checkGameArray
+	
+
+	function playerKey(){
+		
+		$("#messages").val("Now, it\'s your turn.").css({"font-size": "15px", "text-align" : "center"});
+
+		$(".box").click(function() {
+			playerArray.push(Number($(this).val()))
+			console.log(playerArray)
+
+
+			gameArray.forEach(function(element,index,array) {
+				if (Number($(this).val()) == Number(element.val())){
+					$("#messages").val("Keep Going!");
+				
+					if (gameArray.length == playerArray.length) {
+						levelCount++
+						$("#messages").val("Another Round?. Press Start to begin.");
+						Number($("#level").val()) = levelCount;
+					}
+
+				} else {
+					alert("Sorry. You have lost!");
+					$("#messages").val("Press START to begin."); 
+					$("#level").val("");
+				}	
+
+			}) //end forEach
+
+		 }); //end key up
+
+	  }; //playerKey
+
+</script>
+<!---personalized js external file-->
+  </body>
+  </html>  
